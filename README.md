@@ -43,6 +43,7 @@ List/Create Colleges: GET/POST /colleges/
 | Parameter |	Type	| Description |
 | :-------- | :--------- | :---------- |
 | title	| string	| Required. Title |
+| image | image file | Image |
 
 
 ```http
@@ -52,6 +53,7 @@ List/Create Games: GET/POST /games/
 | Parameter |	Type	| Description |
 | :-------- | :--------- | :---------- |
 | title	| string	| Required. Title |
+| image | image file | Image |
 
 
 
@@ -68,13 +70,16 @@ Create SubEvent: POST /subevent/
 ```
 
 **Request:**
+```example```
+
 ```json
+
 {
-  "title": "Event 1",
-  "game": 1, 
-  "description": "Description of Event 1",
-  "rules": "Rules of Event 1",
-  "participants": [1, 2, 3]
+"title":"sub event title",
+"game":"Kho-Kho", # game title not id 
+"description":"description",
+"rules":"rules",
+"main_event_id":3
 }
 ```
 
@@ -94,24 +99,6 @@ Add User to SubEvent: POST /subevent/<int:id>/
 
 
 ```http
-User Event: POST /myevent/<int:id>/
+User Event: POST /myevent/
 ```
 
-```<int:id> id is user id```
-
-```http
-AddSubEvent: POST /subevent/
-```
-
-```example```
-
-```json
-
-{
-"title":"sub event title",
-"game":"Kho-Kho", # game title not id 
-"description":"description",
-"rules":"rules",
-"main_event_id":3
-}
-```
