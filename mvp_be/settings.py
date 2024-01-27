@@ -144,3 +144,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'theriteshmahale@gmail.com'  
 EMAIL_HOST_PASSWORD = 'zswy kmxv cvgh fouh'  
+
+
+
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "/media/"

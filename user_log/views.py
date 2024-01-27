@@ -102,11 +102,13 @@ class GamesListCreateView(APIView):
         serializer = GamesSerializer(games, many=True)
         return Response(serializer.data)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = GamesSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -194,7 +196,7 @@ class MainEventCreateAPIView(APIView):
     def post(self, request, *args, **kwargs):
         
         try:
-            main_event = MainEvent.objects.create(title=request.data['title'])
+            main_event = MainEvent.objects.create(title=request.data['title'],image=request.data['image'])
             main_event.save()
             return Response({
                 "title":request.data['title'],

@@ -61,6 +61,8 @@ class College(models.Model):
     
 class Games(models.Model):
     title = models.CharField(max_length=500)
+    image = models.ImageField(upload_to='images',null=True)
+    
     
     def __str__(self):
         return self.title
@@ -76,6 +78,7 @@ class SubEvents(models.Model):
     
 class MainEvent(models.Model):
     title = models.CharField(max_length=500,null=True)
+    image = models.ImageField(upload_to='main_event_images',null=True)
     sub_events = models.ManyToManyField(SubEvents,related_name="sub_events")
     def __str__(self):
         return self.title

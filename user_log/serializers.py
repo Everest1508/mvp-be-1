@@ -22,7 +22,7 @@ class CollegeSerializer(serializers.ModelSerializer):
 class GamesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Games
-        fields = ('id', 'title')
+        fields = ('id', 'title',"image")
         
 
 
@@ -39,4 +39,4 @@ class MainEventsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MainEvent
-        fields = ['id', 'title', 'sub_events']
+        fields = ['id', 'title', 'sub_events','image']
