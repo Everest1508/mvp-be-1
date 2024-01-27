@@ -22,15 +22,16 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(models.Model):   
-    name     = models.CharField(max_length=255)
-    email    = models.EmailField(unique=True)
-    phone    = models.CharField(max_length=15, unique=True)
-    age      = models.PositiveIntegerField()
-    college  = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=False)
-    otp = models.IntegerField(null=True)
-    participation = models.BooleanField(default=False)
+    
+    name               = models.CharField(max_length=255)
+    email              = models.EmailField(unique=True)
+    phone              = models.CharField(max_length=15, unique=True)
+    age                = models.PositiveIntegerField()
+    college            = models.CharField(max_length=255)
+    password           = models.CharField(max_length=255)
+    is_active          = models.BooleanField(default=False)
+    otp                = models.IntegerField(null=True)
+    participation      = models.BooleanField(default=False)
     participated_event = models.CharField(max_length=50,null=True)
 
     objects = CustomUserManager()

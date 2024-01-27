@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'knox',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_simplejwt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -128,9 +129,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK =  {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-    # 'rest framework. authentication. BasicAuthentication' ,
-    # 'rest framework. authentication. SessionAuthentication' ,
-    'knox.auth.TokenAuthentication' ,
+    # 'knox.auth.TokenAuthentication' ,
+     'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 
@@ -145,7 +145,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'theriteshmahale@gmail.com'  
 EMAIL_HOST_PASSWORD = 'zswy kmxv cvgh fouh'  
 
-
+# AUTHENTICATION_BACKENDS = ['user_log.backends.CustomUserBackend']
 
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"

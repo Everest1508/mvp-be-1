@@ -18,6 +18,5 @@ urlpatterns = [
     path('subevent/<int:id>/',AddUserToEventView.as_view(),name=""),
     path('event/',MainEventCreateAPIView.as_view(),name=""),
     path('myevent/<int:id>',MyEventView.as_view(),name=""),
-    
     path('mainevent/<int:id>/',AddSubEventView.as_view(),name=""),
 ]

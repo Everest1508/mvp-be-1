@@ -9,6 +9,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import random
 from django.shortcuts import get_object_or_404,get_list_or_404
 from django.http import JsonResponse
+import jwt
+from django.conf import settings
+from .authentication import IsJWTAuthenticated
+from .permissions import IsJWTAuthenticatedPermission
+
+
+from django.shortcuts import render
+
 
 class SignupView(APIView):
     
@@ -37,10 +45,30 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
         user = User.objects.filter(Q(password=password) and Q(email=email)).first()
+        
+        
+        token = jwt.encode({
+                "id":user.id,
+                "name":user.name,
+                "email":user.email,
+                "phone":user.phone,
+                "age ":user.age,
+                "college":user.college,
+                "password":user.password,
+                'email': user.email,
+                'is_active': user.is_active
+            }, settings.SECRET_KEY, algorithm='HS256')
+        
+        
+        
+        if not user.is_active:
+            return JsonResponse({"error":"user is not verified"})
+        access = token
+        
         return Response(status=status.HTTP_200_OK, data={
-            'access': str(RefreshToken.for_user(user).access_token),
-            'refresh': str(RefreshToken.for_user(user)),
+            'access': access,
             'user': {
+                "id":user.id,
                 "name":user.name,
                 "email":user.email,
                 "phone":user.phone,
@@ -207,8 +235,10 @@ class MainEventCreateAPIView(APIView):
             return Response({"error":"Event not created"}, status=status.HTTP_400_BAD_REQUEST)
     
 class MyEventView(APIView):
+    authentication_classes = [IsJWTAuthenticated]
+    # permission_classes = [IsJWTAuthenticatedPermission]
     def get(self,request,id):
-        user = User.objects.get(id=id)
+        user = request.user
         participated_event_id = user.participated_event.split(",")
         print(participated_event_id[:-1])
         event = get_list_or_404(SubEvents, id__in=participated_event_id[:-1])

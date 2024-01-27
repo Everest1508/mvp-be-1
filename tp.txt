@@ -1,7 +1,0 @@
-
-{
-"title":"sub event title",
-"game":"Kho-Kho",
-"description":"description",
-"rules":"rules"
-}
