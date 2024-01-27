@@ -7,9 +7,8 @@ from rest_framework.authtoken.models import Token
 from django.db.models import Q
 from rest_framework_simplejwt.tokens import RefreshToken
 import random
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,get_list_or_404
 from django.http import JsonResponse
-
 
 class SignupView(APIView):
     
@@ -131,6 +130,7 @@ class SubEventCreateAPIView(APIView):
         events = SubEvents.objects.all()
         serializer = SubEventsSerializer(events,many=True)
         return Response(serializer.data)
+    
     def post(self, request, *args, **kwargs):
         serializer = SubEventsSerializer(data=request.data)
 
@@ -148,9 +148,18 @@ class AddUserView(APIView):
             user = User.objects.get(pk=request.data['id'])
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
+        
+        # if user.participation == True:
+        #     return JsonResponse({"error": "Already participated in other event"})
+        
+        
+        print(user.participated_event)
+        
         user.participation = True
-        user.participated_event = sub_event.id
+        user.save()
+        if str(sub_event.id) in user.participated_event:
+            return JsonResponse({"error": "Already participated in this event"})
+        user.participated_event = user.participated_event + str(sub_event.id)+","
         user.save()
         sub_event.participants.add(user)
 
@@ -174,8 +183,9 @@ class MainEventCreateAPIView(APIView):
 class MyEventView(APIView):
     def get(self,request,id):
         user = User.objects.get(id=id)
-        participated_event_id = user.participated_event
-        event = SubEvents.objects.filter(id=participated_event_id)
+        participated_event_id = user.participated_event.split(",")
+        print(participated_event_id[:-1])
+        event = get_list_or_404(SubEvents, id__in=participated_event_id[:-1])
         print(event)
         serializer = SubEventsSerializer(event,many=True)
         return Response(serializer.data)

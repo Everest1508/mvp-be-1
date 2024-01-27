@@ -31,7 +31,7 @@ class User(models.Model):
     is_active = models.BooleanField(default=False)
     otp = models.IntegerField(null=True)
     participation = models.BooleanField(default=False)
-    participated_event = models.IntegerField(null=True)
+    participated_event = models.CharField(max_length=50,null=True)
 
     objects = CustomUserManager()
 

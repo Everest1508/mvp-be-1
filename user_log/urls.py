@@ -2,6 +2,7 @@
 
 from django.urls import path
 from .views import *
+from rest_framework_simplejwt.views import TokenVerifyView
 
 urlpatterns = [
     path('signup/', SignupView.as_view(), name='signup'),
@@ -13,5 +14,6 @@ urlpatterns = [
     path('subevent/',SubEventCreateAPIView.as_view(),name=""),
     path('subevent/<int:id>/',AddUserView.as_view(),name=""),
     path('event/',MainEventCreateAPIView.as_view(),name=""),
-    path('myevent/<int:id>',MyEventView.as_view(),name="")
+    path('myevent/<int:id>',MyEventView.as_view(),name=""),
+    # path('mainevent/<int:id>/',MyEventView.as_view(),name=""),
 ]
