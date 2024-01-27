@@ -99,3 +99,19 @@ User Event: POST /myevent/<int:id>/
 
 ```<int:id> id is user id```
 
+```http
+AddSubEvent: POST /subevent/
+```
+
+```example```
+
+```json
+
+{
+"title":"sub event title",
+"game":"Kho-Kho", # game title not id 
+"description":"description",
+"rules":"rules",
+"main_event_id":3
+}
+```

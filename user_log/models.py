@@ -52,6 +52,7 @@ class User(models.Model):
 
         super(User, self).save(*args, **kwargs)
 
+
 class College(models.Model):
     title = models.CharField(max_length=500)
     

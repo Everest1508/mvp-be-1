@@ -132,15 +132,35 @@ class SubEventCreateAPIView(APIView):
         return Response(serializer.data)
     
     def post(self, request, *args, **kwargs):
-        serializer = SubEventsSerializer(data=request.data)
+        title = request.data['title']
+        game = request.data['game']
+        description = request.data['description']
+        rules = request.data['rules']
+        game = Games.objects.filter(Q(title=game)).first()
+        
+        if not game:
+            game = Games.objects.create(title=request.data['game'])
+            
+        main_event = MainEvent.objects.filter(Q(id=request.data['main_event_id'])).first()
+        try:
+            sub_event = SubEvents.objects.create(
+                title=title,
+                game=game,
+                description=description,
+                rules=rules,
+            )
+            sub_event.save()
+            main_event.sub_events.add(sub_event)
+            main_event.save()
+        except:
+            return Response({"message":"SubEvent not created"})
+        
+        serializer = SubEventsSerializer(sub_event)
+        
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message":"SubEventAdded Successfully","data":serializer.data})
     
-class AddUserView(APIView):
+class AddUserToEventView(APIView):
     def post(self, request, id, *args, **kwargs):
         sub_event = get_object_or_404(SubEvents, pk=id)
 
@@ -148,10 +168,7 @@ class AddUserView(APIView):
             user = User.objects.get(pk=request.data['id'])
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-        # if user.participation == True:
-        #     return JsonResponse({"error": "Already participated in other event"})
-        
+
         
         print(user.participated_event)
         
@@ -159,26 +176,33 @@ class AddUserView(APIView):
         user.save()
         if str(sub_event.id) in user.participated_event:
             return JsonResponse({"error": "Already participated in this event"})
+        
+        
         user.participated_event = user.participated_event + str(sub_event.id)+","
         user.save()
         sub_event.participants.add(user)
 
-        return JsonResponse({"message": "Stored Successfully"})
+        return JsonResponse({"message": "Participated Successfully"})
     
 class MainEventCreateAPIView(APIView):
+    
     def get(self,request):
         events = MainEvent.objects.all()
-        print(events)
         serializer = MainEventsSerializer(events,many=True)
         return Response(serializer.data)
+    
     def post(self, request, *args, **kwargs):
-        serializer = SubEventsSerializer(data=request.data)
+        
+        try:
+            main_event = MainEvent.objects.create(title=request.data['title'])
+            main_event.save()
+            return Response({
+                "title":request.data['title'],
+                "sub_events":[]
+                }, status=status.HTTP_201_CREATED)
 
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({"error":"Event not created"}, status=status.HTTP_400_BAD_REQUEST)
     
 class MyEventView(APIView):
     def get(self,request,id):
@@ -189,3 +213,11 @@ class MyEventView(APIView):
         print(event)
         serializer = SubEventsSerializer(event,many=True)
         return Response(serializer.data)
+
+
+class AddSubEventView(APIView):
+    def put(self,request,id):
+        mainevent = MainEvent.objects.get(id=id)
+        subevent = SubEvents.objects.get(id=request.data['id'])
+        mainevent.sub_events.add(subevent)
+        return JsonResponse({"message": "Sub event added successfully"})
