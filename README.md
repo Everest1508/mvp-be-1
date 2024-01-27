@@ -94,7 +94,7 @@ Add User to SubEvent: POST /subevent/<int:id>/
 
 
 ```http
-User Event: POST /myevent/<int:id>/
+User Event: POST /myevent/
 ```
 
 ```<int:id> id is user id```
