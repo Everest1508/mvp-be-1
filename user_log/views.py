@@ -30,8 +30,19 @@ class SignupView(APIView):
         print(request.data)
         if serializer.is_valid():
             
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
+            # refresh = jwt.encode(user,settings.SECRET_KEY,algorithm="HS256")
+            access_token = jwt.encode({
+                "id":user.id,
+                "name":user.name,
+                "email":user.email,
+                "phone":user.phone,
+                "age ":user.age,
+                "college":user.college,
+                "password":user.password,
+                'email': user.email,
+                'is_active': user.is_active
+            },settings.SECRET_KEY,algorithm="HS256")
+            
             user = serializer.save()
             return Response({'access_token': access_token,"message":"OTP sent on mail"}, status=status.HTTP_201_CREATED)
             
@@ -237,7 +248,7 @@ class MainEventCreateAPIView(APIView):
 class MyEventView(APIView):
     authentication_classes = [IsJWTAuthenticated]
     # permission_classes = [IsJWTAuthenticatedPermission]
-    def get(self,request,id):
+    def get(self,request):
         user = request.user
         participated_event_id = user.participated_event.split(",")
         print(participated_event_id[:-1])
