@@ -216,7 +216,7 @@ class AddUserToEventView(APIView):
         user.save()
         try:
             if str(sub_event.id) in user.participated_event:
-                return JsonResponse({"error": "Already participated in this event"})
+                return JsonResponse({"message": "Already participated in this event"})
         except:
             pass
         
