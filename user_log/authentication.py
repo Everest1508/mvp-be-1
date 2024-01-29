@@ -26,6 +26,7 @@ class IsJWTAuthenticated(BaseAuthentication):
         print(decoded_data)
         try:
             user = User.objects.get(id=decoded_data["id"])
+            print(user)
             # user = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return None

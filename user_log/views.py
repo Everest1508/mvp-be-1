@@ -202,24 +202,28 @@ class SubEventCreateAPIView(APIView):
         return Response({"message":"SubEventAdded Successfully","data":serializer.data})
     
 class AddUserToEventView(APIView):
+    authentication_classes = [IsJWTAuthenticated]
     def post(self, request, id, *args, **kwargs):
         sub_event = get_object_or_404(SubEvents, pk=id)
-
         try:
-            user = User.objects.get(pk=request.data['id'])
+            user = request.user
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
         
         print(user.participated_event)
         
         user.participation = True
         user.save()
-        if str(sub_event.id) in user.participated_event:
-            return JsonResponse({"error": "Already participated in this event"})
+        try:
+            if str(sub_event.id) in user.participated_event:
+                return JsonResponse({"error": "Already participated in this event"})
+        except:
+            pass
         
-        
-        user.participated_event = user.participated_event + str(sub_event.id)+","
+        try:
+            user.participated_event = user.participated_event + str(sub_event.id)+","
+        except:
+            user.participated_event = str(sub_event.id)+","
         user.save()
         sub_event.participants.add(user)
 
@@ -250,7 +254,11 @@ class MyEventView(APIView):
     # permission_classes = [IsJWTAuthenticatedPermission]
     def get(self,request):
         user = request.user
-        participated_event_id = user.participated_event.split(",")
+        try:
+            participated_event_id = user.participated_event.split(",")
+        except:
+            return Response({"message":"There is no Events"})
+            
         print(participated_event_id[:-1])
         event = get_list_or_404(SubEvents, id__in=participated_event_id[:-1])
         print(event)
