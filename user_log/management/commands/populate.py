@@ -1,5 +1,3 @@
-# your_app/management/commands/populate_data.py
-
 from django.core.management.base import BaseCommand
 from user_log.models import College, Games, SubEvents, MainEvent,User
 from django.contrib.auth import get_user_model
@@ -9,39 +7,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Create users
-        user1 = User.objects.create(
-            name='John Doe',
-            email='john.doe@example.com',
-            phone='1234567890',
-            age=25,
-            college='Example University',
-            password='password123',
-            is_active=True,
-            participation=True,
-            participated_event=1,
-        )
-
-        user2 = User.objects.create(
-            name='Jane Doe',
-            email='jane.doe@example.com',
-            phone='9876543210',
-            age=22,
-            college='Another University',
-            password='password456',
-            is_active=True,
-            participation=False,
-            participated_event=None,
-        )
-
-        # Create colleges
-        college1 = College.objects.create(title='Example College')
-        college2 = College.objects.create(title='Another College')
-
-        # Create games
-        game1 = Games.objects.create(title='Football')
-        game2 = Games.objects.create(title='Chess')
-
-        # Create sub events
         sub_event1 = SubEvents.objects.create(
             title='Soccer Tournament',
             game=game1,
@@ -55,10 +20,6 @@ class Command(BaseCommand):
             description='Participate in the ultimate chess championship. Test your strategic thinking against the best!',
             rules='1. Each player must be familiar with standard chess rules.\n2. Rounds will follow a Swiss-system format.',
         )
-
-        # Add participants to sub events
-        sub_event1.participants.add(user1)
-        sub_event2.participants.add(user2)
 
         # Create main event
         main_event = MainEvent.objects.create(
