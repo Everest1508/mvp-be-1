@@ -17,6 +17,7 @@ urlpatterns = [
     path('subevent/',SubEventCreateAPIView.as_view(),name=""),
     path('participate/<int:id>/',AddUserToEventView.as_view(),name=""),
     path('event/',MainEventCreateAPIView.as_view(),name=""),
+    path('withdraw/<int:id>/',WithdrawUserFromEventView.as_view(),name=""),
     path('myevent/',MyEventView.as_view(),name=""),
     path('mainevent/<int:id>/',AddSubEventView.as_view(),name=""),
 ]

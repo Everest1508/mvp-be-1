@@ -7,20 +7,6 @@ from django.core.mail import send_mail
 
 # Create your models here.
 
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email field must be set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, password, **extra_fields)
-
 class User(models.Model):   
     
     name               = models.CharField(max_length=255)
@@ -33,8 +19,6 @@ class User(models.Model):
     otp                = models.IntegerField(null=True)
     participation      = models.BooleanField(default=False)
     participated_event = models.CharField(max_length=50,null=True)
-
-    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'phone', 'age', 'college']

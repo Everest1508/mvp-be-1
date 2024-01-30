@@ -228,7 +228,38 @@ class AddUserToEventView(APIView):
         sub_event.participants.add(user)
 
         return JsonResponse({"message": "Participated Successfully"})
-    
+
+class SubEventHandler:
+    def remove_participant(self, sub_event, user):
+        try:
+            if str(sub_event.id) not in user.participated_event:
+                return {"message": "User has not participated in this event"}
+
+            user.participated_event = user.participated_event.replace(str(sub_event.id) + ",", "")
+            user.save()
+
+            sub_event.participants.remove(user)
+            sub_event.save()
+            return {"message": "Participant removed successfully"}
+        except:
+            return {"message": "Failed to remove participant"}
+
+
+class WithdrawUserFromEventView(APIView):
+    authentication_classes = [IsJWTAuthenticated]
+
+    def post(self, request, id, *args, **kwargs):
+        sub_event = get_object_or_404(SubEvents, pk=id)
+        user = request.user
+
+        sub_event_handler = SubEventHandler()
+        result = sub_event_handler.remove_participant(sub_event, user)
+
+        return JsonResponse(result)
+
+
+
+
 class MainEventCreateAPIView(APIView):
     
     def get(self,request):
@@ -259,10 +290,23 @@ class MyEventView(APIView):
         except:
             return Response({"message":"There is no Events"})
             
-        print(participated_event_id[:-1])
-        event = get_list_or_404(SubEvents, id__in=participated_event_id[:-1])
-        print(event)
-        serializer = SubEventsSerializer(event,many=True)
+        valid_event_ids = []
+
+        for event_id in participated_event_id[:-1]:
+            sub_event = get_object_or_404(SubEvents, id=event_id)
+
+            # Check if the user is a participant in the sub-event
+            if user in sub_event.participants.all():
+                valid_event_ids.append(event_id)
+            else:
+                # User is not a participant, remove the event ID from participated_event
+                user.participated_event = user.participated_event.replace(event_id + ",", "")
+                user.save()
+
+        # Retrieve only the valid events
+        events = get_list_or_404(SubEvents, id__in=valid_event_ids)
+        serializer = SubEventsSerializer(events, many=True)
+        
         return Response(serializer.data)
 
 

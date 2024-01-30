@@ -4,5 +4,20 @@ from .models import *
 admin.site.register(User)
 admin.site.register(College)
 admin.site.register(MainEvent)
-admin.site.register(SubEvents)
+# admin.site.register(SubEvents)
 admin.site.register(Games)
+
+class SubEventsAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        # Save the model
+        super().save_model(request, obj, form, change)
+
+        # Check if the participants field has been modified
+        if form.cleaned_data.get('participants'):
+            # Iterate through the participants and update their participated_event
+            for user in form.cleaned_data['participants']:
+                if str(obj.id) not in user.participated_event:
+                    user.participated_event += str(obj.id) + ","
+                    user.save()
+
+admin.site.register(SubEvents, SubEventsAdmin)
