@@ -43,6 +43,7 @@ class MainEventsSerializer(serializers.ModelSerializer):
         
 class RanksSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    sub_event = SubEventsSerializer()
     class Meta:
         model = Ranks
         fields= "__all__"
