@@ -42,6 +42,7 @@ class MainEventsSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'sub_events','image']
         
 class RanksSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
     class Meta:
         model = Ranks
         fields= "__all__"
