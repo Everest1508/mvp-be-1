@@ -20,4 +20,18 @@ class SubEventsAdmin(admin.ModelAdmin):
                     user.participated_event += str(obj.id) + ","
                     user.save()
 
+class RanksAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        # Save the model
+        super().save_model(request, obj, form, change)
+        # user = form.cleaned_data.get('user')
+        if form.cleaned_data.get('rank'):
+            all_ranks = Ranks.objects.filter(user=obj.user,rank=obj.rank)
+            if all_ranks:
+                obj.save()
+            else:
+                obj.delete()
+            
+
 admin.site.register(SubEvents, SubEventsAdmin)
+admin.site.register(Ranks,RanksAdmin)

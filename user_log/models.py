@@ -68,3 +68,11 @@ class MainEvent(models.Model):
     def __str__(self):
         return self.title
     
+
+class Ranks(models.Model):
+    sub_event = models.ForeignKey(SubEvents, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User,on_delete=models.SET_NULL, null= True,blank=True)
+    rank = models.IntegerField(null=True)
+    
+    def __str__(self):
+        return self.user.name + " Rank : " + str(self.rank)      

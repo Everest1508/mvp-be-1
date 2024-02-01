@@ -20,4 +20,5 @@ urlpatterns = [
     path('withdraw/<int:id>/',WithdrawUserFromEventView.as_view(),name=""),
     path('myevent/',MyEventView.as_view(),name=""),
     path('mainevent/<int:id>/',AddSubEventView.as_view(),name=""),
+    path('ranks/',GetResult.as_view(),name="")
 ]

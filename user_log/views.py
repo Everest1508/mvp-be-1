@@ -316,3 +316,10 @@ class AddSubEventView(APIView):
         subevent = SubEvents.objects.get(id=request.data['id'])
         mainevent.sub_events.add(subevent)
         return JsonResponse({"message": "Sub event added successfully"})
+    
+
+class GetResult(APIView):
+    def get(self,request):
+        ranks = Ranks.objects.all()
+        serializer = RanksSerializer(ranks,many=True)
+        return Response(serializer.data)

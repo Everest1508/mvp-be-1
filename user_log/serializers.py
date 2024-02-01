@@ -40,3 +40,8 @@ class MainEventsSerializer(serializers.ModelSerializer):
     class Meta:
         model = MainEvent
         fields = ['id', 'title', 'sub_events','image']
+        
+class RanksSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ranks
+        fields= "__all__"
